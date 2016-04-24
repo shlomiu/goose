@@ -17,7 +17,7 @@
  */
 package com.gravity.goose.extractors
 
-import com.gravity.goose.Article
+import com.gravity.goose.GooseArticle
 import com.gravity.goose.text._
 import com.gravity.goose.utils.Logging
 import java.net.URL
@@ -55,7 +55,7 @@ trait ContentExtractor {
   val A_REL_TAG_SELECTOR: String = "a[rel=tag], a[href*=/tag/]"
   val TOP_NODE_TAGS = new TagsEvaluator(Set("p", "td", "pre"))
 
-  def getTitle(article: Article): String = {
+  def getTitle(article: GooseArticle): String = {
     var title: String = string.empty
 
     val doc = article.doc
@@ -136,14 +136,14 @@ trait ContentExtractor {
   /**
   * if the article has meta description set in the source, use that
   */
-  def getMetaDescription(article: Article): String = {
+  def getMetaDescription(article: GooseArticle): String = {
     getMetaContent(article.doc, "meta[name=description]")
   }
 
   /**
   * if the article has meta keywords set in the source, use that
   */
-  def getMetaKeywords(article: Article): String = {
+  def getMetaKeywords(article: GooseArticle): String = {
     getMetaContent(article.doc, "meta[name=keywords]")
   }
 
@@ -151,7 +151,7 @@ trait ContentExtractor {
   /**
    * if the article has meta canonical link set in the url
    */
-  def getCanonicalLink(article: Article): String = {
+  def getCanonicalLink(article: GooseArticle): String = {
     val meta = article.doc.select("link[rel=canonical]")
     if (meta.size() > 0) {
       val href = Option(meta.first().attr("href")).getOrElse("").trim
@@ -165,7 +165,7 @@ trait ContentExtractor {
     new URL(url).getHost
   }
 
-  def extractTags(article: Article): Set[String] = {
+  def extractTags(article: GooseArticle): Set[String] = {
     val node = article.doc
     if (node.children.size == 0) return NO_STRINGS
     val elements: Elements = Selector.select(A_REL_TAG_SELECTOR, node)
@@ -185,10 +185,11 @@ trait ContentExtractor {
   * also store on how high up the paragraphs are, comments are usually at the bottom and should get a lower score
   *
   * // todo refactor this long method
+ *
   * @return
   */
 
-  def calculateBestNodeBasedOnClustering(article: Article): Option[Element] = {
+  def calculateBestNodeBasedOnClustering(article: GooseArticle): Option[Element] = {
     trace(logPrefix + "Starting to calculate TopNode")
     val doc = article.doc
     var topNode: Element = null
@@ -284,7 +285,6 @@ trait ContentExtractor {
   * alot of times the first paragraph might be the caption under an image so we'll want to make sure if we're going to
   * boost a parent node that it should be connected to other paragraphs, at least for the first n paragraphs
   * so we'll want to make sure that the next sibling is a paragraph and has at least some substatial weight to it
-  *
   *
   * @param node
   * @return

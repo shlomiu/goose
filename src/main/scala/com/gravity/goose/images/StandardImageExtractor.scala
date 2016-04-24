@@ -23,7 +23,7 @@ import org.apache.http.client.protocol.ClientContext
 import org.apache.http.{Header, HttpEntity, HttpResponse}
 import org.apache.http.client.HttpClient
 import org.jsoup.nodes.{Element, Document}
-import com.gravity.goose.{Article, Configuration}
+import com.gravity.goose.{GooseArticle, Configuration}
 import java.util.ArrayList
 import collection.mutable.HashMap
 import scala.collection.JavaConversions._
@@ -51,7 +51,7 @@ case class DepthTraversal(node: Element, parentDepth: Int, siblingDepth: Int)
 *
 * //todo this is a straight java to scala conversion, need to add the nicities of scala, all these null checks make me dizzy
 */
-class StandardImageExtractor(httpClient: HttpClient, article: Article, config: Configuration) extends ImageExtractor {
+class StandardImageExtractor(httpClient: HttpClient, article: GooseArticle, config: Configuration) extends ImageExtractor {
 
 
   /**

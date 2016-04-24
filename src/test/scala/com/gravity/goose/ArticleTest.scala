@@ -12,8 +12,8 @@ class ArticleTest {
 
   @Test
   def newArticle() {
-    val a = new Article()
+    val a = new GooseArticle()
 
-    assertTrue(a.isInstanceOf[Article])
+    assertTrue(a.isInstanceOf[GooseArticle])
   }
 }

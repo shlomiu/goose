@@ -37,14 +37,14 @@ object TestUtils {
   /**
   * returns an article object from a crawl
   */
-  def getArticle(url: String, rawHTML: String = null)(implicit config: Configuration): Article = {
+  def getArticle(url: String, rawHTML: String = null)(implicit config: Configuration): GooseArticle = {
     val goose = new Goose(config)
     val article = goose.extractContent(url, rawHTML)
 //    goose.shutdownNetwork()
     article
   }
 
-  def runArticleAssertions(article: Article, expectedTitle: String = null, expectedStart: String = null, expectedImage: String = null, expectedDescription: String = null, expectedKeywords: String = null): Unit = {
+  def runArticleAssertions(article: GooseArticle, expectedTitle: String = null, expectedStart: String = null, expectedImage: String = null, expectedDescription: String = null, expectedKeywords: String = null): Unit = {
     articleReport.append("URL:      ").append(TAB).append(article.finalUrl).append(NL)
     articleReport.append("TITLE:    ").append(TAB).append(article.title).append(NL)
     articleReport.append("IMAGE:    ").append(TAB).append(article.topImage.getImageSrc).append(NL)

@@ -32,14 +32,15 @@ class Goose(config: Configuration = new Configuration) {
 
   /**
   * Main method to extract an article object from a URL, pass in a url and get back a Article
+ *
   * @url The url that you want to extract
   */
-  def extractContent(url: String, rawHTML: String): Article = {
+  def extractContent(url: String, rawHTML: String): GooseArticle = {
     val cc = new CrawlCandidate(config, url, rawHTML)
     sendToActor(cc)
   }
 
-  def extractContent(url: String): Article = {
+  def extractContent(url: String): GooseArticle = {
     val cc = new CrawlCandidate(config, url, null)
     sendToActor(cc)
   }

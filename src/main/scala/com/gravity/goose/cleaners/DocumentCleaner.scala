@@ -22,7 +22,7 @@ import java.util.regex.{Matcher, Pattern}
 import org.jsoup.nodes.{TextNode, Node, Element, Document}
 import com.gravity.goose.text.ReplaceSequence
 import scala.collection.JavaConversions._
-import com.gravity.goose.Article
+import com.gravity.goose.GooseArticle
 import collection.mutable.ListBuffer
 import org.jsoup.select.{TagsEvaluator, Collector, Elements}
 
@@ -40,7 +40,7 @@ trait DocumentCleaner {
   import DocumentCleaner._
 
 
-  def clean(article: Article): Document = {
+  def clean(article: GooseArticle): Document = {
 
     trace("Starting cleaning phase with DefaultDocumentCleaner")
 
@@ -199,6 +199,7 @@ trait DocumentCleaner {
 
   /**
   * Apparently jsoup expects the node's parent to not be null and throws if it is. Let's be safe.
+ *
   * @param node the node to remove from the doc
   */
   private def removeNode(node: Element) {

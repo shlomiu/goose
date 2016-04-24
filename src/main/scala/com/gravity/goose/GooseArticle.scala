@@ -18,6 +18,8 @@
 
 package com.gravity.goose
 
+import java.util
+
 import images.Image
 import org.jsoup.nodes.{Element, Document}
 import java.util.Date
@@ -29,7 +31,7 @@ import scala.collection._
 * Date: 8/14/11
 */
 
-class Article {
+class GooseArticle {
 
   /**
   * title of the article
@@ -72,6 +74,7 @@ class Article {
   */
   var topImage: Image = new Image
 
+  var allImages: util.ArrayList[Image] = new util.ArrayList[Image]
 
   /**
   * holds a set of tags that may have been in the artcle, these are not meta keywords
@@ -119,7 +122,8 @@ class Article {
    * A property bucket for consumers of goose to store custom data extractions.
    * This is populated by an implementation of {@link com.gravity.goose.extractors.AdditionalDataExtractor}
    * which is executed before document cleansing within {@link com.gravity.goose.CrawlingActor#crawl}
-   * @return a {@link Map Map&lt;String,String&gt;} of property name to property vaue (represented as a {@link String}.
+    *
+    * @return a {@link Map Map&lt;String,String&gt;} of property name to property vaue (represented as a {@link String}.
    */
   var additionalData: Map[String, String] = Map.empty
 }

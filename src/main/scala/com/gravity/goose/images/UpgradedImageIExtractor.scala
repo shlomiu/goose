@@ -5,7 +5,7 @@ import java.util.ArrayList
 import java.util.regex.{Matcher, Pattern}
 
 import com.gravity.goose.text.string
-import com.gravity.goose.{Article, Configuration}
+import com.gravity.goose.{GooseArticle, Configuration}
 import org.apache.http.client.HttpClient
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
@@ -21,7 +21,7 @@ import scala.util.parsing.json.{JSON, JSONObject}
 * Date: 9/22/11
 */
 
-class UpgradedImageIExtractor(httpClient: HttpClient, article: Article, config: Configuration) extends ImageExtractor {
+class UpgradedImageIExtractor(httpClient: HttpClient, article: GooseArticle, config: Configuration) extends ImageExtractor {
 
   import UpgradedImageIExtractor._
 
@@ -39,6 +39,8 @@ class UpgradedImageIExtractor(httpClient: HttpClient, article: Article, config: 
   */
   val linkhash = article.linkhash
 
+  val imageList = new ArrayList[Image]
+
   /**
   * this lists all the known bad button names that we have
   */
@@ -53,25 +55,31 @@ class UpgradedImageIExtractor(httpClient: HttpClient, article: Article, config: 
   def getBestImage(doc: Document, topNode: Element): Image = {
     trace("Starting to Look for the Most Relavent Image")
     checkForKnownElements() match {
-      case Some(image) => return image
+      case Some(image) =>  trace("Found known element")
       case None => {
         trace("No known images found")
       }
     }
 
     checkForLargeImages(topNode, 0, 0) match {
-      case Some(image) => return image
+      case Some(image) => trace("Found large element")
       case None => {
         trace("No big images found")
       }
     }
 
     checkForMetaTag match {
-      case Some(image) => return image
+      case Some(image) => trace("Found meta tag element")
       case None => trace("No Meta Tag Images found")
     }
 
-    new Image
+    article.allImages = imageList
+    if (imageList.isEmpty){
+      new Image
+    }else{
+      imageList.get(0)
+    }
+
   }
 
   /**
@@ -100,17 +108,29 @@ class UpgradedImageIExtractor(httpClient: HttpClient, article: Article, config: 
   }
 
   private def checkForMetaTag: Option[Image] = {
+    var linktag : Image = new Image()
+    var opengraph : Image = new Image()
+
     checkForLinkTag match {
-      case Some(image) => return Some(image)
+      case Some(image) => imageList.add(image)
+                          linktag = image
       case None => trace("No known images found")
     }
 
     checkForOpenGraphTag match {
-      case Some(image) => return Some(image)
+      case Some(image) => imageList.add(image)
+                          opengraph = image
       case None => trace("No known images found")
     }
 
-    None
+   if (linktag.getImageSrc != ""){
+     Some(linktag)
+   }else if (opengraph.getImageSrc != ""){
+     Some(opengraph)
+   }else{
+     None
+   }
+
   }
 
 
@@ -132,6 +152,19 @@ class UpgradedImageIExtractor(httpClient: HttpClient, article: Article, config: 
       case Some(goodImages) => {
         trace("checkForLargeImages: After findImagesThatPassByteSizeTest we have: " + goodImages.size + " at parent depth: " + parentDepthLevel)
         val scoredImages = downloadImagesAndGetResults(goodImages, parentDepthLevel)
+
+        val it  = scoredImages.sortBy(-_._2).iterator
+            for (highScoreImage <- it){
+              val image = new Image
+              // mainImage.topImageNode = highScoreImage
+              image.imageSrc = highScoreImage._1.imgSrc
+              image.imageExtractionType = "bigimage"
+              image.bytes = highScoreImage._1.bytes
+              image.confidenceScore = if (scoredImages.size > 0) (100 / scoredImages.size) else 0
+
+              imageList.add(image);
+            }
+
         // get the high score image in a tuple
         scoredImages.sortBy(-_._2).take(1).headOption match {
           case Some(highScoreImage) => {
@@ -530,6 +563,7 @@ class UpgradedImageIExtractor(httpClient: HttpClient, article: Article, config: 
           mainImage.width = locallyStoredImage.width
         })
 
+        imageList.add(mainImage)
         Some(mainImage)
 
       case _ =>

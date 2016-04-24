@@ -64,7 +64,7 @@ class GoldSitesTestIT {
   def businessWeek() {
     implicit val config = TestUtils.DEFAULT_CONFIG
     val url: String = "http://www.businessweek.com/magazine/content/10_34/b4192066630779.htm"
-    val article: Article = TestUtils.getArticle(url)
+    val article: GooseArticle = TestUtils.getArticle(url)
     val title = "Olivia Munn: Queen of the Uncool"
     val content = "Six years ago, Olivia Munn arrived in Hollywood with fading ambitions of making it as a sports reporter and set about deploying"
     val image = "http://images.businessweek.com/mz/10/34/370/1034_mz_66popmunnessa.jpg"
@@ -76,7 +76,7 @@ class GoldSitesTestIT {
   def businessWeek2() {
     implicit val config = TestUtils.DEFAULT_CONFIG
     val url: String = "http://www.businessweek.com/magazine/content/10_34/b4192048613870.htm"
-    val article: Article = TestUtils.getArticle(url)
+    val article: GooseArticle = TestUtils.getArticle(url)
     val content = "There's discord on Wall Street: Strategists at major American investment banks see a"
     val image = "http://images.businessweek.com/mz/covers/current_120x160.jpg"
     TestUtils.runArticleAssertions(article = article, expectedStart = content, expectedImage = image)
@@ -87,7 +87,7 @@ class GoldSitesTestIT {
   def businessWeek3() {
     implicit val config = TestUtils.DEFAULT_CONFIG
     val url: String = "http://www.businessinsider.com/ben-and-jerrys-schweddy-balls-one-million-moms-american-family-association-boycott-2011-9"
-    val article: Article = TestUtils.getArticle(url)
+    val article: GooseArticle = TestUtils.getArticle(url)
     //    if (article == null) println("NULL ARTICLE!") else println("TEXT: \n" + article.cleanedArticleText)
     val content = "Not everyone's a fan of Ben & Jerry's new \"Schweddy Balls\" -- the Saturday Night Live-inspired flavor it rolled out a few weeks ago"
     val image = "http://static7.businessinsider.com/image/4e68c8c36bb3f7d80a000016/conservative-moms-are-now-calling-for-a-boycott-of-ben-and-jerrys-schweddy-balls-flavor.jpg"

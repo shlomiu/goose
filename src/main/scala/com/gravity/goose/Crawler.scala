@@ -40,8 +40,8 @@ class Crawler(config: Configuration) {
 
   import Crawler._
 
-  def crawl(crawlCandidate: CrawlCandidate): Article = {
-    val article = new Article()
+  def crawl(crawlCandidate: CrawlCandidate): GooseArticle = {
+    val article = new GooseArticle()
     for {
       parseCandidate <- URLHelper.getCleanedUrl(crawlCandidate.url)
       rawHtml <- getHTML(crawlCandidate, parseCandidate)
@@ -122,7 +122,7 @@ class Crawler(config: Configuration) {
   }
 
 
-  def getImageExtractor(article: Article): ImageExtractor = {
+  def getImageExtractor(article: GooseArticle): ImageExtractor = {
     val httpClient: HttpClient = config.getHtmlFetcher.getHttpClient
     new UpgradedImageIExtractor(httpClient, article, config)
   }
@@ -155,7 +155,7 @@ class Crawler(config: Configuration) {
   * cleans up any temp files we have laying around like temp images
   * removes any image in the temp dir that starts with the linkhash of the url we just parsed
   */
-  def releaseResources(article: Article) {
+  def releaseResources(article: GooseArticle) {
     trace(logPrefix + "STARTING TO RELEASE ALL RESOURCES")
 
     val dir: File = new File(config.localStoragePath)
